@@ -37,8 +37,16 @@ function create() {
   ball.body.velocity.set(150, -150);
   // Make ball bounce off world boundaries
   ball.body.collideWorldBounds = true;
+  // Disable bottom edge collision
+  game.physics.arcade.checkCollision.down = false;
   // Set ball bounce
   ball.body.bounce.set(1);
+  // Detect losing condition
+  ball.checkWorldBounds = true;
+  ball.events.onOutOfBounds.add(function () {
+    alert('Game Over!');
+    location.reload();
+  }, this);
   // Add paddle, position in middle
   paddle = game.add.sprite(game.world.width*0.5, game.world.height-5, 'paddle');
   // Set anchor
