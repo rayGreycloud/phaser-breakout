@@ -65,8 +65,10 @@ function create() {
 }
 
 function update() {
-  // Enable collision btwn ball and paddle
+  // Enable ball/paddle collision
   game.physics.arcade.collide(ball, paddle);
+  // Enable brick/ball collision
+  game.physics.arcade.collide(ball, bricks, ballHitBrick);
   // Set paddle control
   paddle.x = game.input.x || game.world.width*0.5;
 }
@@ -101,4 +103,9 @@ function initBricks() {
       bricks.add(newBrick);
     }
   }
+}
+
+function ballHitBrick(ball, brick) {
+  // Remove brick from canvas
+  brick.kill()
 }
