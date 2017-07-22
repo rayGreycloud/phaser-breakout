@@ -116,4 +116,19 @@ function ballHitBrick(ball, brick) {
   score += 10;
   // Update score text
   scoreText.setText('Points: ' + score);
+
+  // Initialize variable for win check
+  var count_alive = 0;
+  // Iterate thru bricks
+  for (i = 0; i < bricks.children.length; i++) {
+    // check if brick alive
+    if (bricks.children[i].alive == true) {
+      count_alive++;
+    }
+  }
+  // If count is 0, all bricks are gone and game won
+  if (count_alive == 0) {
+    alert('Winner Winner Chicken Dinner!');
+    location.reload();
+  }
 }
