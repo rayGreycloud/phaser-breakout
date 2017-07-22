@@ -14,6 +14,10 @@ var newBrick;
 var brickInfo;
 var scoreText;
 var score = 0;
+var lives = 3;
+var livesText;
+var lifeLostText;
+var textStyle;
 
 function preload() {
   // Scale canvas but respect aspect ratio
@@ -48,10 +52,7 @@ function create() {
   ball.body.bounce.set(1);
   // Detect losing condition
   ball.checkWorldBounds = true;
-  ball.events.onOutOfBounds.add(function () {
-    alert('Game Over!');
-    location.reload();
-  }, this);
+  ball.events.onOutOfBounds.add(ballLeavesScreen, this);
   // Add paddle, position in middle
   paddle = game.add.sprite(game.world.width*0.5, game.world.height-5, 'paddle');
   // Set anchor
@@ -62,9 +63,17 @@ function create() {
   paddle.body.immovable = true;
   // Draw bricks
   initBricks();
-
-  // Add score text to Display
-  scoreText = game.add.text(5, 5, 'Points: 0', {font: '18px Arial', fill: '#0095DD'});
+  // Styles for text
+  textStyle = {font: '18px Arial', fill: '#0095DD'};
+  // Display score text
+  scoreText = game.add.text(5, 5, 'Points: 0', textStyle);
+  // Display lives left
+  livesText = game.add.text(game.world.width-5, 5, 'Lives: ' + lives, textStyle);
+  livesText.anchor.set(1,0);
+  // Display life lost message
+  lifeLostText = game.add.text(game.world.width*0.5, game.world.height*0.5, 'Life lost, click to continue', textStyle);
+  lifeLostText.anchor.set(0.5);
+  lifeLostText.visible = false;
 
 }
 
@@ -131,4 +140,27 @@ function ballHitBrick(ball, brick) {
     alert('Winner Winner Chicken Dinner!');
     location.reload();
   }
+}
+
+function ballLeavesScreen() {
+  // Decrement lives left
+  lives--;
+  // Check if non-zero
+  if (lives) {
+    // Show lives left
+    livesText.setText('Lives: ' + lives);
+    lifeLostText.visible = true;
+    // Reset ball and paddle positions
+    ball.reset(game.world.width*0.5, game.world.height-25);
+    paddle.reset(game.world.width*0.5, game.world.height-5);
+    // Hide message and start ball
+    game.input.onDown.addOnce(function () {
+      lifeLostText.visible = false;
+      ball.body.velocity.set(150, -150);
+    }, this);
+  }
+    else {
+      alert('Game Over!');
+      location.reload();
+    }
 }
