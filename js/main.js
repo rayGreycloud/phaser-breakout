@@ -9,6 +9,9 @@ var game = new Phaser.Game(width, height, Phaser.CANVAS, null, {
 
 var ball;
 var paddle;
+var bricks;
+var newBrick;
+var brickInfo;
 
 function preload() {
   // Scale canvas but respect aspect ratio
@@ -19,10 +22,10 @@ function preload() {
   // Add custom canvas background color
   game.stage.backgroundColor = '#eee';
 
-  // Load ball image
+  // Load images
   game.load.image('ball', '/assets/images/ball.png');
-  // Load paddle image
   game.load.image('paddle', '/assets/images/paddle.png');
+  game.load.image('brick', '/assets/images/brick.png');
 }
 
 function create() {
@@ -56,6 +59,9 @@ function create() {
   // Make paddle stay in place
   paddle.body.immovable = true;
 
+  // Draw bricks
+  initBricks();
+
 }
 
 function update() {
@@ -63,4 +69,36 @@ function update() {
   game.physics.arcade.collide(ball, paddle);
   // Set paddle control
   paddle.x = game.input.x || game.world.width*0.5;
+}
+
+function initBricks() {
+  brickInfo = {
+    width: 50,
+    height: 20,
+    count: {
+      row: 7,
+      col: 3
+    },
+    offset: {
+      top: 50,
+      left: 60
+    },
+    padding: 10
+  };
+
+  // Add brick group
+  bricks = game.add.group();
+  for (c = 0; c < brickInfo.count.col; c++) {
+    for (r = 0; r < brickInfo.count.row; r++) {
+      // Create new brick and add to group
+      var brickX = (r*(brickInfo.width+brickInfo.padding))+brickInfo.offset.left;
+      var brickY = (c*(brickInfo.height+brickInfo.padding))+brickInfo.offset.top;
+
+      newBrick = game.add.sprite(brickX, brickY, 'brick');
+      game.physics.enable(newBrick, Phaser.Physics.ARCADE);
+      newBrick.body.immovable = true;
+      newBrick.anchor.set(0.5);
+      bricks.add(newBrick);
+    }
+  }
 }
