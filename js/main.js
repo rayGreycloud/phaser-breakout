@@ -23,8 +23,18 @@ function preload() {
 }
 
 function create() {
+  // Add physics
+  game.physics.startSystem(Phaser.Physics.ARCADE);
   // Add ball
   ball = game.add.sprite(50, 50, 'ball');
+  // Enable physics on ball
+  game.physics.enable(ball, Phaser.Physics.ARCADE);
+  // Set velocity
+  ball.body.velocity.set(150, 150);
+  // Make ball bounce off world boundaries
+  ball.body.collideWorldBounds = true;
+  // Set ball bounce
+  ball.body.bounce.set(1);
 
 }
 
