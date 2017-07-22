@@ -12,6 +12,8 @@ var paddle;
 var bricks;
 var newBrick;
 var brickInfo;
+var scoreText;
+var score = 0;
 
 function preload() {
   // Scale canvas but respect aspect ratio
@@ -58,9 +60,11 @@ function create() {
   game.physics.enable(paddle, Phaser.Physics.ARCADE);
   // Make paddle stay in place
   paddle.body.immovable = true;
-
   // Draw bricks
   initBricks();
+
+  // Add score text to Display
+  scoreText = game.add.text(5, 5, 'Points: 0', {font: '18px Arial', fill: '#0095DD'});
 
 }
 
@@ -108,4 +112,8 @@ function initBricks() {
 function ballHitBrick(ball, brick) {
   // Remove brick from canvas
   brick.kill()
+  // Increase score
+  score += 10;
+  // Update score text
+  scoreText.setText('Points: ' + score);
 }
