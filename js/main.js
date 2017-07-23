@@ -48,8 +48,6 @@ function create() {
   ball.anchor.set(0.5);
   // Enable physics on ball
   game.physics.enable(ball, Phaser.Physics.ARCADE);
-  // Set velocity
-  ball.body.velocity.set(150, -150);
   // Make ball bounce off world boundaries
   ball.body.collideWorldBounds = true;
   // Disable bottom edge collision
@@ -189,6 +187,7 @@ function ballLeavesScreen() {
 
 function ballHitPaddle(ball, paddle) {
   ball.animations.play('wobble');
+  ball.body.velocity.x = -1*5*(paddle.x-ball.x);
 }
 
 function startGame() {
