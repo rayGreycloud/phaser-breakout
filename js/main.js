@@ -18,6 +18,8 @@ var lives = 3;
 var livesText;
 var lifeLostText;
 var textStyle;
+var playing = false;
+var startButton;
 
 function preload() {
   // Scale canvas but respect aspect ratio
@@ -33,6 +35,7 @@ function preload() {
   game.load.image('paddle', '/assets/images/paddle.png');
   game.load.image('brick', '/assets/images/brick.png');
   game.load.spritesheet('ball', '/assets/images/wobble.png', 20, 20);
+  game.load.spritesheet('button', '/assets/images/button.png', 120, 40);
 }
 
 function create() {
@@ -78,6 +81,10 @@ function create() {
   lifeLostText.anchor.set(0.5);
   lifeLostText.visible = false;
 
+  // Add start button
+  startButton = game.add.button(game.world.width*0.5, game.world.height*0.5, 'button', startGame, this, 1, 0, 2);
+  startButton.anchor.set(0.5);
+
 }
 
 function update() {
@@ -85,8 +92,10 @@ function update() {
   game.physics.arcade.collide(ball, paddle, ballHitPaddle);
   // Enable brick/ball collision
   game.physics.arcade.collide(ball, bricks, ballHitBrick);
-  // Set paddle control
-  paddle.x = game.input.x || game.world.width*0.5;
+  // Only allow paddle to move after game start
+  if (playing) {
+      paddle.x = game.input.x || game.world.width*0.5;
+  }
 }
 
 function initBricks() {
@@ -180,4 +189,13 @@ function ballLeavesScreen() {
 
 function ballHitPaddle(ball, paddle) {
   ball.animations.play('wobble');
+}
+
+function startGame() {
+  // Remove button
+  startButton.destroy();
+  // Start ball moving
+  ball.body.velocity.set(150, -150);
+  // Set playing
+  playing = true;
 }
