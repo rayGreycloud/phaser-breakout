@@ -32,6 +32,7 @@ function preload() {
   game.load.image('ball', '/assets/images/ball.png');
   game.load.image('paddle', '/assets/images/paddle.png');
   game.load.image('brick', '/assets/images/brick.png');
+  game.load.spritesheet('ball', '/assets/images/wobble.png', 20, 20);
 }
 
 function create() {
@@ -39,6 +40,8 @@ function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
   // Add ball
   ball = game.add.sprite(game.world.width*0.5, game.world.height-25, 'ball');
+  // Add animation
+  ball.animations.add('wobble', [0,1,0,2,0,1,0,2,0], 24);
   ball.anchor.set(0.5);
   // Enable physics on ball
   game.physics.enable(ball, Phaser.Physics.ARCADE);
@@ -79,7 +82,7 @@ function create() {
 
 function update() {
   // Enable ball/paddle collision
-  game.physics.arcade.collide(ball, paddle);
+  game.physics.arcade.collide(ball, paddle, ballHitPaddle);
   // Enable brick/ball collision
   game.physics.arcade.collide(ball, bricks, ballHitBrick);
   // Set paddle control
@@ -119,8 +122,18 @@ function initBricks() {
 }
 
 function ballHitBrick(ball, brick) {
-  // Remove brick from canvas
-  brick.kill()
+  // Ball animation
+  ball.animations.play('wobble');
+  // Add tween for brick disappear
+  var killTween = game.add.tween(brick.scale);
+  // Define state at end
+  killTween.to({x:0,y:0}, 200, Phaser.Easing.Linear.None);
+  // Add event handler to kill brick after tween done
+  killTween.onComplete.addOnce(function () {
+    brick.kill();
+  }, this);
+  // Start tween
+  killTween.start();
   // Increase score
   score += 10;
   // Update score text
@@ -163,4 +176,8 @@ function ballLeavesScreen() {
       alert('Game Over!');
       location.reload();
     }
+}
+
+function ballHitPaddle(ball, paddle) {
+  ball.animations.play('wobble');
 }
